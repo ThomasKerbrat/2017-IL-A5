@@ -68,3 +68,84 @@ let rec fb100 =
         
 
 fb100 1
+
+// Exercise 3
+
+let fb =
+    fun n ->
+        let rec fb' =
+            fun range ->
+                let n, max = range
+                match n with
+                | x when x <= max ->
+                    displayFizzbuzz x
+                    fb' (n + 1, max)
+                | _ -> ()
+        fb'(1, n)
+
+fb 30
+
+// Exercise 4
+
+let fb2 =
+    let rec fb2' = fun start -> fun max ->
+        match start with
+        | x when x <= max ->
+            displayFizzbuzz x
+            fb2' (start + 1) max
+        | _ -> ()
+    fb2' 1
+
+fb2 40
+
+// Lists
+
+type List<'T> =
+| Empty
+| Item of 'T * List<'T>
+
+let add = fun item -> fun list ->
+    Item(item, list)
+
+let l1 = add "test1" Empty
+let l2 = add "test2" l1
+
+let rec displayList = fun list ->
+    match list with
+    | Empty -> ()
+    | Item(head, tail) ->
+        printfn "%O" head
+        displayList tail
+
+printfn "%A" l2
+
+let rec addLast = fun item -> fun list ->
+    match list with
+    | Empty -> add item Empty
+    | Item(head, tail) ->
+        let l = addLast item tail
+        add head l
+
+let l3 = addLast "test3" l2
+
+type Option<'T> =
+| Value of 'T
+| None
+
+let rec getAt = fun list -> fun i ->
+    match list, i with
+    | Empty, _ -> None
+    | Item(head, _), 0 -> Value head
+    | Item(_, tail), _ -> getAt tail (i - 1)
+
+let rec removeAt = fun list -> fun i ->
+    match list, i with
+    | Empty, _ -> None
+    | Item(_, tail), 0 -> Value tail
+    | Item(head, tail), _ ->
+        let l = removeAt tail (i - 1)
+        match l with
+        | None -> None
+        | Value(v) -> Value(Item(head, v))
+
+let l4 = removeAt l3 1
