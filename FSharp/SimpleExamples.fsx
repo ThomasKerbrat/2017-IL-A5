@@ -43,3 +43,28 @@ let rec processUntil100 =
         | false -> () 
 
 processUntil100 1
+
+// Exercise 2
+
+let fizz = fun n -> n%3 = 0
+let buzz = fun n -> n%5 = 0
+let fizzBuzz = fun n -> fizz n && buzz n
+
+let displayFizzbuzz = 
+    fun n ->
+        match n with
+        | x when fizzBuzz x -> printfn "FizzBuzz"
+        | x when fizz x -> printfn "Fizz"
+        | x when buzz x -> printfn "Buzz"
+        | _ -> printfn "%d" n
+
+let rec fb100 =
+    fun n ->
+        match n with
+        | x when x <= 100 ->
+            displayFizzbuzz x
+            fb100 (x+1)
+        | _ -> ()
+        
+
+fb100 1
