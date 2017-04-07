@@ -162,7 +162,7 @@ type DefaultRule = DefaultRule of (int -> string)
 
 type RuleSet = RuleSet of List<Rule> * DefaultRule
 
-let multipleOf = fun n -> fun s -> fun x ->
+let multipleOf n s x =
     match x with
     | x when x % n = 0 -> Success(s)
     | _ -> Fail
@@ -171,24 +171,24 @@ let fizz = multipleOf 3 "Fizz"
 
 let buzz = multipleOf 5 "Buzz"
 
-let addRules = fun r1 -> fun r2 -> fun n ->
+let addRules r1 r2 n =
     match r1 n, r2 n with
     | Success(s1), Success(s2) -> Success(sprintf "%s%s" s1 s2)
     | _ -> Fail
 
 let fizzBuzz = addRules fizz buzz
 
-let contains3Digits = fun x ->
+let contains3Digits x =
     match x with
     | _ when 99 < x && x < 1000 -> Success("Débile on s'en fout")
     | _ -> Fail
 
 let defaultRule = DefaultRule(fun n -> sprintf "%i" n)
 
-let gameEngine = fun ruleSet -> fun max ->
+let gameEngine ruleSet max =
     let (RuleSet(rules, DefaultRule(defaultRule))) = ruleSet
     
-    let rec display = fun n -> fun rules ->
+    let rec display n rules =
         match rules with
         | [] -> printfn "%s" (defaultRule n)
         | Rule(rule)::tail ->
@@ -196,7 +196,7 @@ let gameEngine = fun ruleSet -> fun max ->
             | Fail -> display n tail
             | Success(s) -> printfn "%s" s
     
-    let rec gameEngine' = fun current ->
+    let rec gameEngine' current =
         match current with
         | _ when current > max -> ()
         | _ ->
@@ -209,3 +209,6 @@ let ruleList = List.map (fun r -> Rule r) [ contains3Digits; fizzBuzz; fizz; buz
 let rules = RuleSet(ruleList, defaultRule)
 
 gameEngine rules 130
+
+List.init 30 (fun x -> x) |> List.filter (fun x -> x % 2 = 0)
+                          |> List.sum
